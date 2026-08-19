@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#0D0818">
+
+  <meta
+    name="description"
+    content="Always Us ❤️ — un piccolo spazio tutto nostro."
+  >
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Always Us">
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+
+  <title>Always Us ❤️</title>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- HEADER -->
+
+  <header class="topbar">
+
+    <div>
+      <div class="brand">
+        Always Us <span>❤️</span>
+      </div>
+
+      <div id="headerSubtitle">
+        Nico ❤️ Gio
+      </div>
+    </div>
+
+    <button
+      class="icon-btn"
+      onclick="showPage('settings')"
+      aria-label="Apri impostazioni"
+    >
+      ⚙️
+    </button>
+
+  </header>
+
+
+  <!-- CONTENUTO -->
+
+  <main id="content">
+
+    <!-- HOME -->
+
+    <section id="home" class="page active">
+
+      <div class="hero">
+
+        <div class="heart-orbit">
+          ❤️
+        </div>
+
+        <h1 id="coupleNames">
+          Nico ❤️ Gio
+        </h1>
+
+        <p class="muted">
+          Insieme dal
+        </p>
+
+        <strong id="relationshipDate">
+          8 febbraio 2026
+        </strong>
+
+
+        <!-- TIMER -->
+
+        <div class="timer-card">
+
+          <div class="timer-item">
+            <strong id="years">0</strong>
+            <span>Anni</span>
+          </div>
+
+          <div class="timer-item">
+            <strong id="months">0</strong>
+            <span>Mesi</span>
+          </div>
+
+          <div class="timer-item">
+            <strong id="days">0</strong>
+            <span>Giorni</span>
+          </div>
+
+          <div class="timer-item">
+            <strong id="hours">0</strong>
+            <span>Ore</span>
+          </div>
+
+          <div class="timer-item">
+            <strong id="minutes">0</strong>
+            <span>Minuti</span>
+          </div>
+
+          <div class="timer-item">
+            <strong id="seconds">0</strong>
+            <span>Secondi</span>
+          </div>
+
+        </div>
+
+
+        <p
+          id="homeMessage"
+          class="home-message"
+        >
+          Ovunque saremo, saremo sempre noi.
+        </p>
+
+      </div>
+
+
+      <!-- MI MANCHI -->
+
+      <button
+        class="missing-button"
+        onclick="showPage('missing')"
+      >
+
+        <span class="big-icon">
+          💌
+        </span>
+
+        <span>
+
+          <strong>
+            Mi manchi
+          </strong>
+
+          <small>
+            Apri un piccolo messaggio per te
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <!-- QUICK ACTIONS -->
+
+      <div class="quick-grid">
+
+        <button onclick="showPage('memories')">
+          <span>📖</span>
+          Ricordi
+        </button>
+
+        <button onclick="showPage('for-you')">
+          <span>💕</span>
+          Per te
+        </button>
+
+        <button onclick="showPage('meeting')">
+          <span>⏳</span>
+          Prossimo incontro
+        </button>
+
+        <button onclick="showPage('settings')">
+          <span>⚙️</span>
+          Impostazioni
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- MI MANCHI -->
+
+    <section id="missing" class="page">
+
+      <div class="page-heading">
+
+        <span>💌</span>
+
+        <h2>
+          Mi manchi
+        </h2>
+
+      </div>
+
+
+      <div class="message-card missing-card">
+
+        <div class="large-heart">
+          ❤️
+        </div>
+
+        <p id="missingMessage"></p>
+
+        <button
+          class="primary-btn"
+          onclick="randomMissingMessage()"
+        >
+          Un altro messaggio ✨
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- RICORDI -->
+
+    <section id="memories" class="page">
+
+      <div class="page-heading">
+
+        <span>📖</span>
+
+        <h2>
+          Ricordi
+        </h2>
+
+      </div>
+
+
+      <div id="memoryList"></div>
+
+
+      <button
+        class="primary-btn"
+        onclick="openMemoryForm()"
+      >
+        ＋ Aggiungi ricordo
+      </button>
+
+    </section>
+
+
+    <!-- PER TE -->
+
+    <section id="for-you" class="page">
+
+      <div class="page-heading">
+
+        <span>💕</span>
+
+        <h2>
+          Per te
+        </h2>
+
+      </div>
+
+
+      <div id="specialMessages"></div>
+
+
+      <button
+        class="primary-btn"
+        onclick="addSpecialMessage()"
+      >
+        ＋ Aggiungi messaggio
+      </button>
+
+    </section>
+
+
+    <!-- PROSSIMO INCONTRO -->
+
+    <section id="meeting" class="page">
+
+      <div class="page-heading">
+
+        <span>⏳</span>
+
+        <h2>
+          Prossimo incontro
+        </h2>
+
+      </div>
+
+
+      <div class="meeting-card">
+
+        <div id="meetingEmpty">
+
+          <div class="meeting-icon">
+            🌙
+          </div>
+
+          <h3>
+            Non ancora programmato
+          </h3>
+
+          <p>
+            Quando conoscerai la data del prossimo incontro,
+            aggiungila nelle Impostazioni.
+          </p>
+
+          <button
+            class="primary-btn"
+            onclick="showPage('settings')"
+          >
+            Imposta data ❤️
+          </button>
+
+        </div>
+
+
+        <div
+          id="meetingCountdown"
+          class="hidden"
+        >
+
+          <h3>
+            Ci vediamo tra...
+          </h3>
+
+
+          <div class="countdown">
+
+            <div>
+              <strong id="meetDays">0</strong>
+              <span>giorni</span>
+            </div>
+
+            <div>
+              <strong id="meetHours">0</strong>
+              <span>ore</span>
+            </div>
+
+            <div>
+              <strong id="meetMinutes">0</strong>
+              <span>minuti</span>
+            </div>
+
+            <div>
+              <strong id="meetSeconds">0</strong>
+              <span>secondi</span>
+            </div>
+
+          </div>
+
+
+          <p
+            id="meetingArrived"
+            class="hidden arrived"
+          >
+            È arrivato il momento! ❤️
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- IMPOSTAZIONI -->
+
+    <section id="settings" class="page">
+
+      <div class="page-heading">
+
+        <span>⚙️</span>
+
+        <h2>
+          Impostazioni
+        </h2>
+
+      </div>
+
+
+      <div class="settings-card">
+
+        <label>
+
+          Il tuo nome
+
+          <input
+            id="yourName"
+            type="text"
+            placeholder="Nico"
+            autocomplete="name"
+          >
+
+        </label>
+
+
+        <label>
+
+          Nome della tua ragazza
+
+          <input
+            id="herName"
+            type="text"
+            placeholder="Gio"
+          >
+
+        </label>
+
+
+        <label>
+
+          Data della relazione
+
+          <input
+            id="relationshipInput"
+            type="date"
+          >
+
+        </label>
+
+
+        <label>
+
+          Messaggio della Home
+
+          <textarea
+            id="homeMessageInput"
+            placeholder="Ovunque saremo, saremo sempre noi."
+          ></textarea>
+
+        </label>
+
+
+        <label>
+
+          Data e ora del prossimo incontro
+
+          <input
+            id="meetingInput"
+            type="datetime-local"
+          >
+
+        </label>
+
+
+        <button
+          class="primary-btn"
+          onclick="saveSettings()"
+        >
+          Salva modifiche ❤️
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- NAVIGAZIONE -->
+
+  <nav class="bottom-nav">
+
+    <button
+      data-page="home"
+      onclick="showPage('home')"
+    >
+      <span>⌂</span>
+      Home
+    </button>
+
+
+    <button
+      data-page="missing"
+      onclick="showPage('missing')"
+    >
+      <span>♡</span>
+      Mi manchi
+    </button>
+
+
+    <button
+      data-page="memories"
+      onclick="showPage('memories')"
+    >
+      <span>▣</span>
+      Ricordi
+    </button>
+
+
+    <button
+      data-page="for-you"
+      onclick="showPage('for-you')"
+    >
+      <span>♥</span>
+      Per te
+    </button>
+
+  </nav>
+
+</div>
+
+
+<script src="./app.js"></script>
+
+</body>
+             </html>
