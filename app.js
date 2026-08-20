@@ -86,6 +86,144 @@ let data = loadData();
 
 let currentMissingMessage = -1;
 
+/* ========================================
+   CUSTOM MODALS
+   ======================================== */
+
+const modalOverlay =
+  document.getElementById("modalOverlay");
+
+const modalTitle =
+  document.getElementById("modalTitle");
+
+const modalIcon =
+  document.getElementById("modalIcon");
+
+const modalContent =
+  document.getElementById("modalContent");
+
+const modalCancel =
+  document.getElementById("modalCancel");
+
+const modalConfirm =
+  document.getElementById("modalConfirm");
+
+let modalConfirmAction = null;
+
+
+function openModal({
+  icon = "💕",
+  title = "Always Us",
+  content = "",
+  confirmText = "Salva ❤️",
+  onConfirm = null
+}) {
+
+  modalIcon.textContent = icon;
+
+  modalTitle.textContent = title;
+
+  modalContent.innerHTML = content;
+
+  modalConfirm.textContent =
+    confirmText;
+
+  modalConfirmAction =
+    onConfirm;
+
+  modalOverlay.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+function closeModal() {
+
+  modalOverlay.classList.add(
+    "hidden"
+  );
+
+  modalContent.innerHTML = "";
+
+  modalConfirmAction = null;
+
+}
+
+
+modalCancel.addEventListener(
+  "click",
+  closeModal
+);
+
+
+modalOverlay.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target ===
+      modalOverlay
+    ) {
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+modalConfirm.addEventListener(
+  "click",
+  () => {
+
+    if (
+      typeof modalConfirmAction ===
+      "function"
+    ) {
+
+      modalConfirmAction();
+
+    }
+
+  }
+);
+
+
+/* ========================================
+   TOAST
+   ======================================== */
+
+function showToast(message) {
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add("show");
+
+
+  clearTimeout(
+    showToast.timeout
+  );
+
+
+  showToast.timeout =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
+
+}
 
 /* STORAGE */
 
@@ -630,91 +768,219 @@ function renderMemories() {
 
 function openMemoryForm() {
 
-  const title =
-    prompt(
-      "Titolo del ricordo:"
-    );
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
 
 
-  if (!title) {
-    return;
-  }
+  openModal({
+
+    icon: "📖",
+
+    title: "Nuovo ricordo",
+
+    confirmText:
+      "Salva ❤️",
+
+    content: `
+
+      <div class="modal-field">
+
+        <label>
+          Titolo
+        </label>
+
+        <input
+          id="memoryTitleInput"
+          type="text"
+          placeholder="L'inizio della nostra storia ❤️"
+          maxlength="80"
+        >
+
+      </div>
 
 
-  const date =
-    prompt(
-      "Data (AAAA-MM-GG):",
-      new Date()
-        .toISOString()
-        .slice(0, 10)
-    );
+      <div class="modal-field">
+
+        <label>
+          Data
+        </label>
+
+        <input
+          id="memoryDateInput"
+          type="date"
+          value="${today}"
+        >
+
+      </div>
 
 
-  if (!date) {
-    return;
-  }
+      <div class="modal-field">
+
+        <label>
+          Descrizione
+        </label>
+
+        <textarea
+          id="memoryDescriptionInput"
+          placeholder="Scrivi qui il tuo ricordo..."
+          maxlength="1000"
+        ></textarea>
+
+      </div>
 
 
-  const description =
-    prompt(
-      "Descrizione:"
-    );
+      <div class="modal-field">
+
+        <label>
+          Foto — URL opzionale
+        </label>
+
+        <input
+          id="memoryPhotoInput"
+          type="url"
+          placeholder="https://..."
+        >
+
+      </div>
+
+    `,
+
+    onConfirm: () => {
+
+      const title =
+        document
+          .getElementById(
+            "memoryTitleInput"
+          )
+          .value
+          .trim();
 
 
-  if (!description) {
-    return;
-  }
+      const date =
+        document
+          .getElementById(
+            "memoryDateInput"
+          )
+          .value;
 
 
-  const photo =
-    prompt(
-      "URL della foto (opzionale):",
-      ""
-    );
+      const description =
+        document
+          .getElementById(
+            "memoryDescriptionInput"
+          )
+          .value
+          .trim();
 
 
-  data.memories.push({
+      const photo =
+        document
+          .getElementById(
+            "memoryPhotoInput"
+          )
+          .value
+          .trim();
 
-    title,
 
-    date,
+      if (
+        !title ||
+        !date ||
+        !description
+      ) {
 
-    description,
+        showToast(
+          "Compila i campi necessari ❤️"
+        );
 
-    photo
+        return;
+
+      }
+
+
+      data.memories.push({
+
+        title,
+
+        date,
+
+        description,
+
+        photo
+
+      });
+
+
+      saveData();
+
+      closeModal();
+
+      renderMemories();
+
+      showToast(
+        "Ricordo salvato ❤️"
+      );
+
+    }
 
   });
-
-
-  saveData();
-
-  renderMemories();
 
 }
 
 
 function deleteMemory(index) {
 
-  if (
-    !confirm(
-      "Vuoi eliminare questo ricordo?"
-    )
-  ) {
+  const memory =
+    data.memories[index];
 
-    return;
-
-  }
+  if (!memory) return;
 
 
-  data.memories.splice(
-    index,
-    1
-  );
+  openModal({
 
+    icon: "🗑️",
 
-  saveData();
+    title: "Eliminare ricordo?",
 
-  renderMemories();
+    confirmText:
+      "Elimina",
+
+    content: `
+
+      <p style="
+        text-align:center;
+        color:var(--muted);
+        line-height:1.6;
+      ">
+        Vuoi davvero eliminare
+        <strong>
+          ${escapeHTML(memory.title)}
+        </strong>?
+      </p>
+
+    `,
+
+    onConfirm: () => {
+
+      data.memories.splice(
+        index,
+        1
+      );
+
+      saveData();
+
+      closeModal();
+
+      renderMemories();
+
+      showToast(
+        "Ricordo eliminato"
+      );
+
+    }
+
+  });
 
 }
 
@@ -784,64 +1050,158 @@ function renderSpecialMessages() {
 
 function addSpecialMessage() {
 
-  const title =
-    prompt("Titolo:");
+  openModal({
+
+    icon: "💕",
+
+    title: "Nuovo messaggio",
+
+    confirmText:
+      "Salva ❤️",
+
+    content: `
+
+      <div class="modal-field">
+
+        <label>
+          Titolo
+        </label>
+
+        <input
+          id="specialTitleInput"
+          type="text"
+          placeholder="Aprimi quando mi manchi 💌"
+          maxlength="80"
+        >
+
+      </div>
 
 
-  if (!title) {
-    return;
-  }
+      <div class="modal-field">
+
+        <label>
+          Messaggio
+        </label>
+
+        <textarea
+          id="specialTextInput"
+          placeholder="Scrivi qualcosa di speciale..."
+          maxlength="1500"
+        ></textarea>
+
+      </div>
+
+    `,
+
+    onConfirm: () => {
+
+      const title =
+        document
+          .getElementById(
+            "specialTitleInput"
+          )
+          .value
+          .trim();
 
 
-  const text =
-    prompt("Messaggio:");
+      const text =
+        document
+          .getElementById(
+            "specialTextInput"
+          )
+          .value
+          .trim();
 
 
-  if (!text) {
-    return;
-  }
+      if (!title || !text) {
+
+        showToast(
+          "Compila titolo e messaggio ❤️"
+        );
+
+        return;
+
+      }
 
 
-  data.specialMessages.push({
+      data.specialMessages.push({
 
-    title,
+        title,
 
-    text
+        text
+
+      });
+
+
+      saveData();
+
+      closeModal();
+
+      renderSpecialMessages();
+
+      showToast(
+        "Messaggio salvato 💕"
+      );
+
+    }
 
   });
-
-
-  saveData();
-
-  renderSpecialMessages();
 
 }
 
 
-function deleteSpecialMessage(
-  index
-) {
+function deleteSpecialMessage(index) {
 
-  if (
-    !confirm(
-      "Vuoi eliminare questo messaggio?"
-    )
-  ) {
+  const message =
+    data.specialMessages[index];
 
-    return;
-
-  }
+  if (!message) return;
 
 
-  data.specialMessages.splice(
-    index,
-    1
-  );
+  openModal({
 
+    icon: "🗑️",
 
-  saveData();
+    title: "Eliminare messaggio?",
 
-  renderSpecialMessages();
+    confirmText:
+      "Elimina",
+
+    content: `
+
+      <p style="
+        text-align:center;
+        color:var(--muted);
+        line-height:1.6;
+      ">
+        Vuoi davvero eliminare
+        <strong>
+          ${escapeHTML(message.title)}
+        </strong>?
+      </p>
+
+    `,
+
+    onConfirm: () => {
+
+      data.specialMessages.splice(
+        index,
+        1
+      );
+
+      saveData();
+
+      closeModal();
+
+      renderSpecialMessages();
+
+      showToast(
+        "Messaggio eliminato"
+      );
+
+    }
+
+  });
 
 }
 
@@ -1094,9 +1454,9 @@ function saveSettings() {
   updateMeeting();
 
 
-  alert(
-    "Modifiche salvate ❤️"
-  );
+  showToast(
+  "Modifiche salvate ❤️"
+);
 
 
   showPage("home");
